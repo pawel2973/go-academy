@@ -4,8 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/pawel2973/go-academy/internal/service/character"
 	"github.com/pawel2973/go-academy/internal/service/movie"
-	"github.com/pawel2973/go-academy/internal/transport/http/characters"
-	"github.com/pawel2973/go-academy/internal/transport/http/movies"
+	"github.com/pawel2973/go-academy/internal/transport/api/characters"
+	"github.com/pawel2973/go-academy/internal/transport/api/movies"
 )
 
 // API aggregates HTTP handlers.

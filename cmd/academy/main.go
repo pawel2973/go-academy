@@ -8,7 +8,7 @@ import (
 	"github.com/pawel2973/go-academy/internal/repository"
 	"github.com/pawel2973/go-academy/internal/service/character"
 	"github.com/pawel2973/go-academy/internal/service/movie"
-	"github.com/pawel2973/go-academy/internal/transport/http/router"
+	"github.com/pawel2973/go-academy/internal/transport/api/router"
 	"github.com/pawel2973/go-academy/pkg/server"
 )
 

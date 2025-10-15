@@ -1,10 +1,9 @@
 package repository
 
 import (
-	"errors"
-
 	"github.com/google/uuid"
 	"github.com/pawel2973/go-academy/internal/domain"
+	"github.com/pawel2973/go-academy/internal/service"
 )
 
 // movieMap stores Movie objects by their ID.
@@ -45,7 +44,7 @@ func (r *MovieRepo) Get(id string) (domain.Movie, bool) {
 // Update modifies an existing Movie.
 func (r *MovieRepo) Update(m domain.Movie) (domain.Movie, error) {
 	if _, ok := r.data[m.ID]; !ok {
-		return domain.Movie{}, errors.New("movie not found")
+		return domain.Movie{}, service.ErrMovieNotFound
 	}
 	r.data[m.ID] = m
 	return m, nil
@@ -54,7 +53,7 @@ func (r *MovieRepo) Update(m domain.Movie) (domain.Movie, error) {
 // Delete removes a Movie by its ID.
 func (r *MovieRepo) Delete(id string) error {
 	if _, ok := r.data[id]; !ok {
-		return errors.New("movie not found")
+		return service.ErrMovieNotFound
 	}
 	delete(r.data, id)
 	return nil

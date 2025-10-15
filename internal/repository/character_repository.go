@@ -45,7 +45,7 @@ func (r *CharacterRepo) Get(id string) (domain.Character, bool) {
 // Update modifies an existing Character.
 func (r *CharacterRepo) Update(c domain.Character) (domain.Character, error) {
 	if _, ok := r.data[c.ID]; !ok {
-		return domain.Character{}, errors.New("character not found")
+		return domain.Character{}, errors.New("character not found") //TODO: custom error + handling
 	}
 	r.data[c.ID] = c
 	return c, nil
@@ -54,7 +54,7 @@ func (r *CharacterRepo) Update(c domain.Character) (domain.Character, error) {
 // Delete removes a Character by its ID.
 func (r *CharacterRepo) Delete(id string) error {
 	if _, ok := r.data[id]; !ok {
-		return errors.New("character not found")
+		return errors.New("character not found") //TODO: custom error + handling
 	}
 	delete(r.data, id)
 	return nil
