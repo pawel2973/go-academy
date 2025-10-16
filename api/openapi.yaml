@@ -1,0 +1,126 @@
+openapi: 3.0.3
+info:
+  title: Go Academy API
+  version: 1.0.0
+  description: Simple movie & character API
+
+servers:
+  - url: http://localhost:8080/api/v1
+
+paths:
+  /movies:
+    get:
+      summary: List all movies
+      responses:
+        "200":
+          description: List of movies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Movie'
+    post:
+      summary: Create a new movie
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovieRequest'
+      responses:
+        "201":
+          description: Created movie
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Movie'
+
+  /movies/{movie_id}/characters:
+    get:
+      summary: List all characters for a movie
+      parameters:
+        - in: path
+          name: movie_id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Character'
+    post:
+      summary: Create a character for a movie
+      parameters:
+        - in: path
+          name: movie_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterRequest'
+      responses:
+        "201":
+          description: Created character
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+
+  /characters/{id}:
+    delete:
+      summary: Delete a character
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Deleted successfully
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        year:
+          type: integer
+    MovieRequest:
+      type: object
+      required: [ title, year ]
+      properties:
+        title:
+          type: string
+        year:
+          type: integer
+          minimum: 1880
+    Character:
+      type: object
+      properties:
+        id:
+          type: string
+        movie_id:
+          type: string
+        name:
+          type: string
+    CharacterRequest:
+      type: object
+      required: [ name ]
+      properties:
+        name:
+          type: string
