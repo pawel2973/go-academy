@@ -2,23 +2,23 @@ package router
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/pawel2973/go-academy/internal/modules/character/service"
-	"github.com/pawel2973/go-academy/internal/modules/character/transport/http"
-	service2 "github.com/pawel2973/go-academy/internal/modules/movie/service"
-	http2 "github.com/pawel2973/go-academy/internal/modules/movie/transport/http"
+	characterSvc "github.com/pawel2973/go-academy/internal/modules/character/service"
+	characterHTTP "github.com/pawel2973/go-academy/internal/modules/character/transport/http"
+	movieSvc "github.com/pawel2973/go-academy/internal/modules/movie/service"
+	movieHTTP "github.com/pawel2973/go-academy/internal/modules/movie/transport/http"
 )
 
 // API aggregates HTTP handlers.
 type API struct {
-	MoviesController     *http2.MovieHandler
-	CharactersController *http.CharacterHandler
+	MoviesController     *movieHTTP.MovieHandler
+	CharactersController *characterHTTP.CharacterHandler
 }
 
 // NewAPI returns a new API.
-func NewAPI(movieSvc *service2.MovieService, charSvc *service.CharacterService) *API {
+func NewAPI(movieSvc *movieSvc.MovieService, charSvc *characterSvc.CharacterService) *API {
 	return &API{
-		MoviesController:     http2.NewMovieHandler(movieSvc),
-		CharactersController: http.NewCharacterHandler(charSvc),
+		MoviesController:     movieHTTP.NewMovieHandler(movieSvc),
+		CharactersController: characterHTTP.NewCharacterHandler(charSvc),
 	}
 }
 
