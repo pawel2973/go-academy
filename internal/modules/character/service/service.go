@@ -28,6 +28,11 @@ func (s *CharacterService) Create(movieID, name string) (domain.Character, error
 	return s.charactersRepo.Save(domain.Character{MovieID: movieID, Name: name}), nil
 }
 
+// ListAll returns all characters from the repository.
+func (s *CharacterService) ListAll() []domain.Character {
+	return s.charactersRepo.GetAll()
+}
+
 // ListByMovie returns charactersRepo associated with a movie.
 func (s *CharacterService) ListByMovie(movieID string) []domain.Character {
 	out := []domain.Character{}
@@ -42,6 +47,22 @@ func (s *CharacterService) ListByMovie(movieID string) []domain.Character {
 // Get returns a character by its ID.
 func (s *CharacterService) Get(id string) (domain.Character, bool) {
 	return s.charactersRepo.Get(id)
+}
+
+// UpdateDomain updates character by ID and data.
+func (s *CharacterService) UpdateDomain(id, movieID, name string) (domain.Character, error) {
+	ch, ok := s.charactersRepo.Get(id)
+	if !ok {
+		return domain.Character{}, errors.ErrCharacterNotFound
+	}
+
+	// update fields
+	ch.Name = name
+	if movieID != "" {
+		ch.MovieID = movieID
+	}
+
+	return s.charactersRepo.Update(ch)
 }
 
 // Update updates a character (requires ID; if MovieID changes, the movie must exist).

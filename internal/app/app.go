@@ -5,12 +5,14 @@ import (
 	"fmt"
 
 	"github.com/pawel2973/go-academy/internal/app/initdata"
+	charSvc "github.com/pawel2973/go-academy/internal/modules/character/service"
+	movieSvc "github.com/pawel2973/go-academy/internal/modules/movie/service"
+	"github.com/pawel2973/go-academy/internal/shared/openapi"
 	"go.uber.org/fx"
 
 	"github.com/pawel2973/go-academy/configs"
 	"github.com/pawel2973/go-academy/internal/modules/character"
 	"github.com/pawel2973/go-academy/internal/modules/movie"
-	"github.com/pawel2973/go-academy/internal/transport/router"
 	"github.com/pawel2973/go-academy/pkg/server"
 )
 
@@ -25,7 +27,6 @@ func New() *fx.App {
 		character.Module,
 
 		// --- Infrastructure modules ---
-		router.Module,
 		server.Module,
 
 		// --- App lifecycle ---
@@ -37,11 +38,17 @@ func New() *fx.App {
 // registerHTTP handles HTTP routing and lifecycle hooks.
 func registerHTTP(
 	lc fx.Lifecycle,
-	api *router.API,
 	srv *server.Server,
 	cfg configs.Config,
+	mSvc *movieSvc.MovieService,
+	cSvc *charSvc.CharacterService,
 ) {
-	api.Register(srv.E)
+	// Build the API implementation and register it with the base prefix /api/v1
+	movieAPI := openapi.NewMovieAPI(mSvc)
+	charAPI := openapi.NewCharacterAPI(cSvc)
+	impl := openapi.NewServerImplementation(movieAPI, charAPI)
+
+	openapi.RegisterHandlersWithBaseURL(srv.E, impl, "/api/v1")
 
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {

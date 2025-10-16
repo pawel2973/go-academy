@@ -13,21 +13,22 @@ import (
 
 // Character defines model for Character.
 type Character struct {
-	Id      *string `json:"id,omitempty"`
-	MovieId *string `json:"movie_id,omitempty"`
-	Name    *string `json:"name,omitempty"`
+	Id      string `json:"id"`
+	MovieId string `json:"movie_id"`
+	Name    string `json:"name"`
 }
 
 // CharacterRequest defines model for CharacterRequest.
 type CharacterRequest struct {
-	Name string `json:"name"`
+	MovieId *string `json:"movie_id,omitempty"`
+	Name    string  `json:"name"`
 }
 
 // Movie defines model for Movie.
 type Movie struct {
-	Id    *string `json:"id,omitempty"`
-	Title *string `json:"title,omitempty"`
-	Year  *int    `json:"year,omitempty"`
+	Id    string `json:"id"`
+	Title string `json:"title"`
+	Year  int    `json:"year"`
 }
 
 // MovieRequest defines model for MovieRequest.
@@ -36,29 +37,59 @@ type MovieRequest struct {
 	Year  int    `json:"year"`
 }
 
-// PostMoviesJSONRequestBody defines body for PostMovies for application/json ContentType.
-type PostMoviesJSONRequestBody = MovieRequest
+// CharacterId defines model for character_id.
+type CharacterId = string
 
-// PostMoviesMovieIdCharactersJSONRequestBody defines body for PostMoviesMovieIdCharacters for application/json ContentType.
-type PostMoviesMovieIdCharactersJSONRequestBody = CharacterRequest
+// MovieId defines model for movie_id.
+type MovieId = string
+
+// UpdateCharacterJSONRequestBody defines body for UpdateCharacter for application/json ContentType.
+type UpdateCharacterJSONRequestBody = CharacterRequest
+
+// CreateMovieJSONRequestBody defines body for CreateMovie for application/json ContentType.
+type CreateMovieJSONRequestBody = MovieRequest
+
+// UpdateMovieJSONRequestBody defines body for UpdateMovie for application/json ContentType.
+type UpdateMovieJSONRequestBody = MovieRequest
+
+// CreateCharacterForMovieJSONRequestBody defines body for CreateCharacterForMovie for application/json ContentType.
+type CreateCharacterForMovieJSONRequestBody = CharacterRequest
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+	// List all characters
+	// (GET /characters)
+	ListCharacters(ctx echo.Context) error
 	// Delete a character
-	// (DELETE /characters/{id})
-	DeleteCharactersId(ctx echo.Context, id string) error
+	// (DELETE /characters/{character_id})
+	DeleteCharacter(ctx echo.Context, characterId CharacterId) error
+	// Get character by ID
+	// (GET /characters/{character_id})
+	GetCharacter(ctx echo.Context, characterId CharacterId) error
+	// Update a character
+	// (PUT /characters/{character_id})
+	UpdateCharacter(ctx echo.Context, characterId CharacterId) error
 	// List all movies
 	// (GET /movies)
-	GetMovies(ctx echo.Context) error
+	ListMovies(ctx echo.Context) error
 	// Create a new movie
 	// (POST /movies)
-	PostMovies(ctx echo.Context) error
-	// List all characters for a movie
+	CreateMovie(ctx echo.Context) error
+	// Delete a movie
+	// (DELETE /movies/{movie_id})
+	DeleteMovie(ctx echo.Context, movieId MovieId) error
+	// Get movie by ID
+	// (GET /movies/{movie_id})
+	GetMovie(ctx echo.Context, movieId MovieId) error
+	// Update a movie
+	// (PUT /movies/{movie_id})
+	UpdateMovie(ctx echo.Context, movieId MovieId) error
+	// List characters for a movie
 	// (GET /movies/{movie_id}/characters)
-	GetMoviesMovieIdCharacters(ctx echo.Context, movieId string) error
+	ListCharactersForMovie(ctx echo.Context, movieId MovieId) error
 	// Create a character for a movie
 	// (POST /movies/{movie_id}/characters)
-	PostMoviesMovieIdCharacters(ctx echo.Context, movieId string) error
+	CreateCharacterForMovie(ctx echo.Context, movieId MovieId) error
 }
 
 // ServerInterfaceWrapper converts echo contexts to parameters.
@@ -66,45 +97,86 @@ type ServerInterfaceWrapper struct {
 	Handler ServerInterface
 }
 
-// DeleteCharactersId converts echo context to params.
-func (w *ServerInterfaceWrapper) DeleteCharactersId(ctx echo.Context) error {
+// ListCharacters converts echo context to params.
+func (w *ServerInterfaceWrapper) ListCharacters(ctx echo.Context) error {
 	var err error
-	// ------------- Path parameter "id" -------------
-	var id string
 
-	err = runtime.BindStyledParameterWithOptions("simple", "id", ctx.Param("id"), &id, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.ListCharacters(ctx)
+	return err
+}
+
+// DeleteCharacter converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteCharacter(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "character_id" -------------
+	var characterId CharacterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "character_id", ctx.Param("character_id"), &characterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
-		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter id: %s", err))
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter character_id: %s", err))
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.DeleteCharactersId(ctx, id)
+	err = w.Handler.DeleteCharacter(ctx, characterId)
 	return err
 }
 
-// GetMovies converts echo context to params.
-func (w *ServerInterfaceWrapper) GetMovies(ctx echo.Context) error {
+// GetCharacter converts echo context to params.
+func (w *ServerInterfaceWrapper) GetCharacter(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "character_id" -------------
+	var characterId CharacterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "character_id", ctx.Param("character_id"), &characterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter character_id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.GetCharacter(ctx, characterId)
+	return err
+}
+
+// UpdateCharacter converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateCharacter(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "character_id" -------------
+	var characterId CharacterId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "character_id", ctx.Param("character_id"), &characterId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter character_id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdateCharacter(ctx, characterId)
+	return err
+}
+
+// ListMovies converts echo context to params.
+func (w *ServerInterfaceWrapper) ListMovies(ctx echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetMovies(ctx)
+	err = w.Handler.ListMovies(ctx)
 	return err
 }
 
-// PostMovies converts echo context to params.
-func (w *ServerInterfaceWrapper) PostMovies(ctx echo.Context) error {
+// CreateMovie converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateMovie(ctx echo.Context) error {
 	var err error
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostMovies(ctx)
+	err = w.Handler.CreateMovie(ctx)
 	return err
 }
 
-// GetMoviesMovieIdCharacters converts echo context to params.
-func (w *ServerInterfaceWrapper) GetMoviesMovieIdCharacters(ctx echo.Context) error {
+// DeleteMovie converts echo context to params.
+func (w *ServerInterfaceWrapper) DeleteMovie(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "movie_id" -------------
-	var movieId string
+	var movieId MovieId
 
 	err = runtime.BindStyledParameterWithOptions("simple", "movie_id", ctx.Param("movie_id"), &movieId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -112,15 +184,15 @@ func (w *ServerInterfaceWrapper) GetMoviesMovieIdCharacters(ctx echo.Context) er
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.GetMoviesMovieIdCharacters(ctx, movieId)
+	err = w.Handler.DeleteMovie(ctx, movieId)
 	return err
 }
 
-// PostMoviesMovieIdCharacters converts echo context to params.
-func (w *ServerInterfaceWrapper) PostMoviesMovieIdCharacters(ctx echo.Context) error {
+// GetMovie converts echo context to params.
+func (w *ServerInterfaceWrapper) GetMovie(ctx echo.Context) error {
 	var err error
 	// ------------- Path parameter "movie_id" -------------
-	var movieId string
+	var movieId MovieId
 
 	err = runtime.BindStyledParameterWithOptions("simple", "movie_id", ctx.Param("movie_id"), &movieId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
 	if err != nil {
@@ -128,7 +200,55 @@ func (w *ServerInterfaceWrapper) PostMoviesMovieIdCharacters(ctx echo.Context) e
 	}
 
 	// Invoke the callback with all the unmarshaled arguments
-	err = w.Handler.PostMoviesMovieIdCharacters(ctx, movieId)
+	err = w.Handler.GetMovie(ctx, movieId)
+	return err
+}
+
+// UpdateMovie converts echo context to params.
+func (w *ServerInterfaceWrapper) UpdateMovie(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "movie_id" -------------
+	var movieId MovieId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "movie_id", ctx.Param("movie_id"), &movieId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter movie_id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.UpdateMovie(ctx, movieId)
+	return err
+}
+
+// ListCharactersForMovie converts echo context to params.
+func (w *ServerInterfaceWrapper) ListCharactersForMovie(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "movie_id" -------------
+	var movieId MovieId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "movie_id", ctx.Param("movie_id"), &movieId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter movie_id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.ListCharactersForMovie(ctx, movieId)
+	return err
+}
+
+// CreateCharacterForMovie converts echo context to params.
+func (w *ServerInterfaceWrapper) CreateCharacterForMovie(ctx echo.Context) error {
+	var err error
+	// ------------- Path parameter "movie_id" -------------
+	var movieId MovieId
+
+	err = runtime.BindStyledParameterWithOptions("simple", "movie_id", ctx.Param("movie_id"), &movieId, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationPath, Explode: false, Required: true})
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("Invalid format for parameter movie_id: %s", err))
+	}
+
+	// Invoke the callback with all the unmarshaled arguments
+	err = w.Handler.CreateCharacterForMovie(ctx, movieId)
 	return err
 }
 
@@ -160,10 +280,16 @@ func RegisterHandlersWithBaseURL(router EchoRouter, si ServerInterface, baseURL 
 		Handler: si,
 	}
 
-	router.DELETE(baseURL+"/characters/:id", wrapper.DeleteCharactersId)
-	router.GET(baseURL+"/movies", wrapper.GetMovies)
-	router.POST(baseURL+"/movies", wrapper.PostMovies)
-	router.GET(baseURL+"/movies/:movie_id/characters", wrapper.GetMoviesMovieIdCharacters)
-	router.POST(baseURL+"/movies/:movie_id/characters", wrapper.PostMoviesMovieIdCharacters)
+	router.GET(baseURL+"/characters", wrapper.ListCharacters)
+	router.DELETE(baseURL+"/characters/:character_id", wrapper.DeleteCharacter)
+	router.GET(baseURL+"/characters/:character_id", wrapper.GetCharacter)
+	router.PUT(baseURL+"/characters/:character_id", wrapper.UpdateCharacter)
+	router.GET(baseURL+"/movies", wrapper.ListMovies)
+	router.POST(baseURL+"/movies", wrapper.CreateMovie)
+	router.DELETE(baseURL+"/movies/:movie_id", wrapper.DeleteMovie)
+	router.GET(baseURL+"/movies/:movie_id", wrapper.GetMovie)
+	router.PUT(baseURL+"/movies/:movie_id", wrapper.UpdateMovie)
+	router.GET(baseURL+"/movies/:movie_id/characters", wrapper.ListCharactersForMovie)
+	router.POST(baseURL+"/movies/:movie_id/characters", wrapper.CreateCharacterForMovie)
 
 }

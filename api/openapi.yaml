@@ -2,7 +2,7 @@ openapi: 3.0.3
 info:
   title: Go Academy API
   version: 1.0.0
-  description: Simple movie & character API
+  description: OpenAPI specification for Go Academy API managing movies and characters.
 
 servers:
   - url: http://localhost:8080/api/v1
@@ -11,6 +11,8 @@ paths:
   /movies:
     get:
       summary: List all movies
+      operationId: listMovies
+      tags: [ movies ]
       responses:
         "200":
           description: List of movies
@@ -19,77 +21,193 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Movie'
+                  $ref: "#/components/schemas/Movie"
     post:
       summary: Create a new movie
+      operationId: createMovie
+      tags: [ movies ]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/MovieRequest'
+              $ref: "#/components/schemas/MovieRequest"
       responses:
         "201":
           description: Created movie
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Movie'
+                $ref: "#/components/schemas/Movie"
+        "400":
+          description: Invalid input
 
-  /movies/{movie_id}/characters:
+  /movies/{movie_id}:
+    parameters:
+      - $ref: "#/components/parameters/movie_id"
     get:
-      summary: List all characters for a movie
-      parameters:
-        - in: path
-          name: movie_id
-          required: true
-          schema:
-            type: string
+      summary: Get movie by ID
+      operationId: getMovie
+      tags: [ movies ]
       responses:
         "200":
-          description: List of characters
+          description: Single movie
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Character'
-    post:
-      summary: Create a character for a movie
-      parameters:
-        - in: path
-          name: movie_id
-          required: true
-          schema:
-            type: string
+                $ref: "#/components/schemas/Movie"
+        "404":
+          description: Movie not found
+    put:
+      summary: Update a movie
+      operationId: updateMovie
+      tags: [ movies ]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CharacterRequest'
+              $ref: "#/components/schemas/MovieRequest"
+      responses:
+        "200":
+          description: Updated movie
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Movie"
+        "400":
+          description: Invalid input
+        "404":
+          description: Movie not found
+    delete:
+      summary: Delete a movie
+      operationId: deleteMovie
+      tags: [ movies ]
+      responses:
+        "204":
+          description: Deleted successfully
+          content: { }
+        "404":
+          description: Movie not found
+
+  /movies/{movie_id}/characters:
+    parameters:
+      - $ref: "#/components/parameters/movie_id"
+    get:
+      summary: List characters for a movie
+      operationId: listCharactersForMovie
+      tags: [ movies ]
+      responses:
+        "200":
+          description: List of characters for the movie
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Character"
+        "404":
+          description: Movie not found
+    post:
+      summary: Create a character for a movie
+      operationId: createCharacterForMovie
+      tags: [ movies ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CharacterRequest"
       responses:
         "201":
           description: Created character
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Character'
+                $ref: "#/components/schemas/Character"
+        "400":
+          description: Invalid input
+        "404":
+          description: Movie not found
 
-  /characters/{id}:
+  /characters:
+    get:
+      summary: List all characters
+      operationId: listCharacters
+      tags: [ characters ]
+      responses:
+        "200":
+          description: List of all characters
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Character"
+
+  /characters/{character_id}:
+    parameters:
+      - $ref: "#/components/parameters/character_id"
+    get:
+      summary: Get character by ID
+      operationId: getCharacter
+      tags: [ characters ]
+      responses:
+        "200":
+          description: Single character
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Character"
+        "404":
+          description: Character not found
+    put:
+      summary: Update a character
+      operationId: updateCharacter
+      tags: [ characters ]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CharacterRequest"
+      responses:
+        "200":
+          description: Updated character
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Character"
+        "400":
+          description: Invalid input
+        "404":
+          description: Character not found
     delete:
       summary: Delete a character
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
+      operationId: deleteCharacter
+      tags: [ characters ]
       responses:
         "204":
           description: Deleted successfully
+          content: { }
+        "404":
+          description: Character not found
 
 components:
+  parameters:
+    movie_id:
+      name: movie_id
+      in: path
+      required: true
+      schema:
+        type: string
+    character_id:
+      name: character_id
+      in: path
+      required: true
+      schema:
+        type: string
+
   schemas:
     Movie:
       type: object
@@ -98,17 +216,23 @@ components:
           type: string
         title:
           type: string
+          minLength: 1
         year:
           type: integer
+          minimum: 1880
+      required: [ id, title, year ]
+
     MovieRequest:
       type: object
       required: [ title, year ]
       properties:
         title:
           type: string
+          minLength: 1
         year:
           type: integer
           minimum: 1880
+
     Character:
       type: object
       properties:
@@ -118,9 +242,15 @@ components:
           type: string
         name:
           type: string
+          minLength: 1
+      required: [ id, name, movie_id ]
+
     CharacterRequest:
       type: object
       required: [ name ]
       properties:
         name:
+          type: string
+          minLength: 1
+        movie_id:
           type: string
