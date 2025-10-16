@@ -1,19 +1,19 @@
-package characters
+package http
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/pawel2973/go-academy/internal/service/character"
+	"github.com/pawel2973/go-academy/internal/modules/character/service"
 )
 
 // CharacterHandler is a controller responsible for the Character resource.
 type CharacterHandler struct {
-	svc *character.CharacterService
+	svc *service.CharacterService
 }
 
 // NewCharacterHandler creates a new CharacterHandler.
-func NewCharacterHandler(svc *character.CharacterService) *CharacterHandler {
+func NewCharacterHandler(svc *service.CharacterService) *CharacterHandler {
 	return &CharacterHandler{svc: svc}
 }
 

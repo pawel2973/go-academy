@@ -4,11 +4,12 @@ import (
 	"fmt"
 
 	"github.com/pawel2973/go-academy/configs"
-	"github.com/pawel2973/go-academy/internal/initdata"
-	"github.com/pawel2973/go-academy/internal/repository"
-	"github.com/pawel2973/go-academy/internal/service/character"
-	"github.com/pawel2973/go-academy/internal/service/movie"
-	"github.com/pawel2973/go-academy/internal/transport/api/router"
+	"github.com/pawel2973/go-academy/internal/app/initdata"
+	repository2 "github.com/pawel2973/go-academy/internal/modules/character/repository"
+	"github.com/pawel2973/go-academy/internal/modules/character/service"
+	"github.com/pawel2973/go-academy/internal/modules/movie/repository"
+	service2 "github.com/pawel2973/go-academy/internal/modules/movie/service"
+	"github.com/pawel2973/go-academy/internal/transport/router"
 	"github.com/pawel2973/go-academy/pkg/server"
 )
 
@@ -17,12 +18,12 @@ func main() {
 
 	// Initialize repositories and load sample data
 	movieRepo := repository.NewMovieRepo()
-	characterRepo := repository.NewCharacterRepo()
+	characterRepo := repository2.NewCharacterRepo()
 	initdata.InitSample(movieRepo, characterRepo)
 
 	// Initialize services
-	movieSvc := movie.NewMovieService(movieRepo, characterRepo)
-	charSvc := character.NewCharacterService(characterRepo, movieRepo)
+	movieSvc := service2.NewMovieService(movieRepo, characterRepo)
+	charSvc := service.NewCharacterService(characterRepo, movieRepo)
 
 	// Initialize server (with middleware)
 	srv := server.New()

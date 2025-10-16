@@ -1,21 +1,21 @@
-package movies
+package http
 
 import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/pawel2973/go-academy/internal/domain"
-	"github.com/pawel2973/go-academy/internal/service/movie"
-	"github.com/pawel2973/go-academy/internal/transport/api"
+	"github.com/pawel2973/go-academy/internal/modules/movie/domain"
+	"github.com/pawel2973/go-academy/internal/modules/movie/service"
+	"github.com/pawel2973/go-academy/internal/shared/api"
 )
 
 // MovieHandler is a controller responsible for the Movie resource.
 type MovieHandler struct {
-	svc *movie.MovieService
+	svc *service.MovieService
 }
 
 // NewMovieHandler creates a new MovieHandler.
-func NewMovieHandler(svc *movie.MovieService) *MovieHandler {
+func NewMovieHandler(svc *service.MovieService) *MovieHandler {
 	return &MovieHandler{svc: svc}
 }
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/pawel2973/go-academy/internal/service"
+	errors2 "github.com/pawel2973/go-academy/internal/shared/errors"
 )
 
 // ErrorResponse is a JSON error payload.
@@ -22,9 +22,9 @@ func NewError(msg string) ErrorResponse {
 // Returns a JSON error with appropriate status code.
 func MapError(c echo.Context, err error) error {
 	switch {
-	case errors.Is(err, service.ErrMovieNotFound):
+	case errors.Is(err, errors2.ErrMovieNotFound):
 		return c.JSON(http.StatusNotFound, NewError(err.Error()))
-	case errors.Is(err, service.ErrIDRequired), errors.Is(err, service.ErrMovieIDRequired):
+	case errors.Is(err, errors2.ErrIDRequired), errors.Is(err, errors2.ErrMovieIDRequired):
 		return c.JSON(http.StatusBadRequest, NewError(err.Error()))
 	default:
 		return c.JSON(http.StatusInternalServerError, NewError("internal server error"))

@@ -1,19 +1,20 @@
-package movie
+package service
 
 import (
-	"github.com/pawel2973/go-academy/internal/domain"
-	"github.com/pawel2973/go-academy/internal/repository"
-	"github.com/pawel2973/go-academy/internal/service"
+	repository2 "github.com/pawel2973/go-academy/internal/modules/character/repository"
+	"github.com/pawel2973/go-academy/internal/modules/movie/domain"
+	"github.com/pawel2973/go-academy/internal/modules/movie/repository"
+	"github.com/pawel2973/go-academy/internal/shared/errors"
 )
 
 // MovieService handles use cases related to moviesRepo.
 type MovieService struct {
 	moviesRepo     *repository.MovieRepo
-	charactersRepo *repository.CharacterRepo
+	charactersRepo *repository2.CharacterRepo
 }
 
 // NewMovieService creates a new MovieService.
-func NewMovieService(movies *repository.MovieRepo, characters *repository.CharacterRepo) *MovieService {
+func NewMovieService(movies *repository.MovieRepo, characters *repository2.CharacterRepo) *MovieService {
 	return &MovieService{moviesRepo: movies, charactersRepo: characters}
 }
 
@@ -59,7 +60,7 @@ func (s *MovieService) Delete(id string) error {
 // validateID checks if the ID is not empty.
 func (s *MovieService) validateID(id string) error {
 	if id == "" {
-		return service.ErrIDRequired
+		return errors.ErrIDRequired
 	}
 	return nil
 }
@@ -67,7 +68,7 @@ func (s *MovieService) validateID(id string) error {
 // validateMovieHasID checks if the movie has a non-empty ID.
 func (s *MovieService) validateMovieHasID(m domain.Movie) error {
 	if m.ID == "" {
-		return service.ErrIDRequired
+		return errors.ErrIDRequired
 	}
 	return nil
 }

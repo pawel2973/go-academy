@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/google/uuid"
-	"github.com/pawel2973/go-academy/internal/domain"
+	"github.com/pawel2973/go-academy/internal/modules/character/domain"
 )
 
 // characterMap stores Character objects by their ID.

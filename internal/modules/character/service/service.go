@@ -1,19 +1,20 @@
-package character
+package service
 
 import (
-	"github.com/pawel2973/go-academy/internal/domain"
-	"github.com/pawel2973/go-academy/internal/repository"
-	"github.com/pawel2973/go-academy/internal/service"
+	"github.com/pawel2973/go-academy/internal/modules/character/domain"
+	repository2 "github.com/pawel2973/go-academy/internal/modules/character/repository"
+	"github.com/pawel2973/go-academy/internal/modules/movie/repository"
+	"github.com/pawel2973/go-academy/internal/shared/errors"
 )
 
 // CharacterService handles use cases related to charactersRepo.
 type CharacterService struct {
-	charactersRepo *repository.CharacterRepo
+	charactersRepo *repository2.CharacterRepo
 	moviesRepo     *repository.MovieRepo
 }
 
 // NewCharacterService creates a new CharacterService.
-func NewCharacterService(characters *repository.CharacterRepo, movies *repository.MovieRepo) *CharacterService {
+func NewCharacterService(characters *repository2.CharacterRepo, movies *repository.MovieRepo) *CharacterService {
 	return &CharacterService{charactersRepo: characters, moviesRepo: movies}
 }
 
@@ -60,7 +61,7 @@ func (s *CharacterService) Update(c domain.Character) (domain.Character, error) 
 // Delete removes a character by its ID.
 func (s *CharacterService) Delete(id string) error {
 	if id == "" {
-		return service.ErrIDRequired
+		return errors.ErrIDRequired
 	}
 	return s.charactersRepo.Delete(id)
 }
@@ -68,7 +69,7 @@ func (s *CharacterService) Delete(id string) error {
 // validateCharacterHasID checks if the character has a non-empty ID.
 func (s *CharacterService) validateCharacterHasID(c domain.Character) error {
 	if c.ID == "" {
-		return service.ErrIDRequired
+		return errors.ErrIDRequired
 	}
 	return nil
 }
@@ -76,7 +77,7 @@ func (s *CharacterService) validateCharacterHasID(c domain.Character) error {
 // validateMovieID checks if the movie ID is not empty.
 func (s *CharacterService) validateMovieID(movieID string) error {
 	if movieID == "" {
-		return service.ErrMovieIDRequired
+		return errors.ErrMovieIDRequired
 	}
 	return nil
 }
@@ -84,7 +85,7 @@ func (s *CharacterService) validateMovieID(movieID string) error {
 // validateMovieExists checks if the movie exists in the repository.
 func (s *CharacterService) validateMovieExists(movieID string) error {
 	if _, ok := s.moviesRepo.Get(movieID); !ok {
-		return service.ErrMovieNotFound
+		return errors.ErrMovieNotFound
 	}
 	return nil
 }
