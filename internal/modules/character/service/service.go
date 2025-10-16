@@ -2,19 +2,18 @@ package service
 
 import (
 	"github.com/pawel2973/go-academy/internal/modules/character/domain"
-	repository2 "github.com/pawel2973/go-academy/internal/modules/character/repository"
-	"github.com/pawel2973/go-academy/internal/modules/movie/repository"
+	movieDomain "github.com/pawel2973/go-academy/internal/modules/movie/domain"
 	"github.com/pawel2973/go-academy/internal/shared/errors"
 )
 
 // CharacterService handles use cases related to charactersRepo.
 type CharacterService struct {
-	charactersRepo *repository2.CharacterRepo
-	moviesRepo     *repository.MovieRepo
+	charactersRepo domain.CharacterRepository
+	moviesRepo     movieDomain.MovieRepository
 }
 
 // NewCharacterService creates a new CharacterService.
-func NewCharacterService(characters *repository2.CharacterRepo, movies *repository.MovieRepo) *CharacterService {
+func NewCharacterService(characters domain.CharacterRepository, movies movieDomain.MovieRepository) *CharacterService {
 	return &CharacterService{charactersRepo: characters, moviesRepo: movies}
 }
 

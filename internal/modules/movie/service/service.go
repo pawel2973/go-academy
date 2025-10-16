@@ -1,20 +1,19 @@
 package service
 
 import (
-	repository2 "github.com/pawel2973/go-academy/internal/modules/character/repository"
+	characterDomain "github.com/pawel2973/go-academy/internal/modules/character/domain"
 	"github.com/pawel2973/go-academy/internal/modules/movie/domain"
-	"github.com/pawel2973/go-academy/internal/modules/movie/repository"
 	"github.com/pawel2973/go-academy/internal/shared/errors"
 )
 
 // MovieService handles use cases related to moviesRepo.
 type MovieService struct {
-	moviesRepo     *repository.MovieRepo
-	charactersRepo *repository2.CharacterRepo
+	moviesRepo     domain.MovieRepository
+	charactersRepo characterDomain.CharacterRepository
 }
 
 // NewMovieService creates a new MovieService.
-func NewMovieService(movies *repository.MovieRepo, characters *repository2.CharacterRepo) *MovieService {
+func NewMovieService(movies domain.MovieRepository, characters characterDomain.CharacterRepository) *MovieService {
 	return &MovieService{moviesRepo: movies, charactersRepo: characters}
 }
 
