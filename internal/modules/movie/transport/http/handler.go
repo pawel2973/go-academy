@@ -7,6 +7,7 @@ import (
 	"github.com/pawel2973/go-academy/internal/modules/movie/domain"
 	"github.com/pawel2973/go-academy/internal/modules/movie/service"
 	"github.com/pawel2973/go-academy/internal/shared/api"
+	appErr "github.com/pawel2973/go-academy/internal/shared/errors"
 )
 
 // MovieHandler is a controller responsible for the Movie resource.
@@ -53,7 +54,7 @@ func (h *MovieHandler) GetMovie(c echo.Context) error {
 	id := c.Param("id")
 	m, ok := h.svc.Get(id)
 	if !ok {
-		return c.JSON(http.StatusNotFound, api.NewError("movie not found"))
+		return c.JSON(http.StatusNotFound, appErr.ErrMovieNotFound)
 	}
 	resp := MovieResponse{ID: m.ID, Title: m.Title, Year: m.Year}
 	return c.JSON(http.StatusOK, resp)
@@ -64,10 +65,10 @@ func (h *MovieHandler) GetMovie(c echo.Context) error {
 func (h *MovieHandler) CreateMovie(c echo.Context) error {
 	var req MovieRequest
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, api.NewError("invalid JSON"))
+		return c.JSON(http.StatusBadRequest, appErr.ErrInvalidJSON)
 	}
 	if req.Title == "" || req.Year <= 0 {
-		return c.JSON(http.StatusBadRequest, api.NewError("missing title or invalid year"))
+		return c.JSON(http.StatusBadRequest, appErr.ErrMovieInvalidData)
 	}
 
 	m := h.svc.Create(req.Title, req.Year)
@@ -81,7 +82,7 @@ func (h *MovieHandler) UpdateMovie(c echo.Context) error {
 	id := c.Param("id")
 	var req MovieRequest
 	if err := c.Bind(&req); err != nil {
-		return c.JSON(http.StatusBadRequest, api.NewError("invalid JSON"))
+		return c.JSON(http.StatusBadRequest, appErr.ErrInvalidJSON)
 	}
 
 	m := domain.Movie{ID: id, Title: req.Title, Year: req.Year}

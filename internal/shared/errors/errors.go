@@ -3,7 +3,15 @@ package errors
 import "errors"
 
 var (
-	ErrIDRequired      = errors.New("id required")
-	ErrMovieNotFound   = errors.New("movie not found")
-	ErrMovieIDRequired = errors.New("movieID required")
+	// General errors
+	ErrIDRequired  = errors.New("id required")
+	ErrInvalidJSON = errors.New("invalid JSON")
+
+	// Movie domain errors
+	ErrMovieNotFound    = errors.New("movie not found")
+	ErrMovieInvalidData = errors.New("missing title or invalid year")
+	ErrMovieIDRequired  = errors.New("movieID required")
+
+	// Character domain errors
+	ErrCharacterNotFound = errors.New("character not found")
 )
